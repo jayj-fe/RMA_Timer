@@ -1,0 +1,137 @@
+<html>
+    <head>
+		<meta charset="utf-8">
+		<style type="text/css">
+			#result table{
+				border-collapse:collapse;
+				border:black solid 1px;
+			}
+			#result td{
+				border:black solid 1px;
+			}
+			#result td[t='z']{
+				display:none;
+			}
+			
+			#result td[t='n']{
+				display:none;
+			}
+			
+		</style>
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
+        <script>
+					var nTimer;
+					var fnTimer = function(){
+						$("#result td.deadline").each(function(index, el){
+							var rowTr = el.parentElement;
+							var deadTime = $(rowTr).find("td[t='n']")[1].timeVal;
+							var nowTime = Date.now();
+							var deadLine = deadTime - nowTime;
+							if(deadLine<0){
+								el.innerHTML = "<strong style='color:red;'>기한초과<strong>";
+							}else{
+								var day     = Math.floor(deadLine/86400000);
+								deadLine   -= day*86400000;
+								var hours   = Math.floor(deadLine/3600000);
+								deadLine   -= hours*3600000;
+								if(hours<10){hours="0"+hours;}
+								var minutes  = Math.floor(deadLine/60000);
+								deadLine   -= minutes*60000;
+								if(minutes<10){minutes="0"+minutes;}
+								var seconds  = Math.floor(deadLine/1000);
+								if(seconds<10){seconds="0"+seconds;}
+								
+								var htmlVal = day+"일 " + hours + "시간 " + minutes + "분 " + seconds + "초";
+								
+								$(rowTr).find("td.deadLine").css("backgroundColor","transparent");
+								if(day==0 && hours < 2){
+									$(rowTr).find("td.deadLine").css("backgroundColor","yellow");
+									htmlVal += " <strong style='color:red;'>마감임박<strong>";
+								}else if(day==0 && hours < 3){
+									$(rowTr).find("td.deadLine").css("backgroundColor","yellow");
+								}
+
+								el.innerHTML = htmlVal;
+							}
+						});
+					};
+								window.onload = function(){
+					
+						document.getElementById("repairList").onchange = readList;
+
+								};
+								var readList = function(){
+
+										var countReader = new FileReader();
+										countReader.onload = function () {
+												var data = countReader.result;
+												var wb = XLSX.read(data,{type:"binary"});
+							
+							for(var key in wb.Sheets.Sheet1){
+								if(!key.startsWith("C") && !key.startsWith("D")){continue;}
+								if(isNaN(key.charAt(1))){continue;}
+								var cellObj = wb.Sheets.Sheet1[key];
+								if(cellObj.t=="n"){
+									delete cellObj.w;
+									cellObj.z="yyyymmddhhmmss";
+									XLSX.utils.format_cell(wb.Sheets.Sheet1[key],cellObj.v,{dateNF:"yyyymmddhhmmss"});
+								}
+							}
+							
+							document.getElementById("result").innerHTML = XLSX.utils.sheet_to_html(wb.Sheets.Sheet1);
+
+							$("#result td[t='n']").each(function(index,el){
+								var fmt     = $(el).clone().prop("id","n_fmt_"+index).attr("t","f");
+								var dateVal = fmt.text();
+								var year    = dateVal.substring(0,4);
+								var month   = dateVal.substring(4,6);
+								var day     = dateVal.substring(6,8);
+								var hour    = dateVal.substring(8,10);
+								var minute  = dateVal.substring(10,12);
+								var second  = dateVal.substring(12,14);
+								
+								var timeVal = new Date();
+								timeVal.setFullYear(year);
+								timeVal.setMonth(parseInt(month)-1);
+								timeVal.setDate(day);
+								timeVal.setHours(hour);
+								timeVal.setMinutes(minute);
+								timeVal.setSeconds(second);
+								
+								el.timeVal = timeVal;
+								
+								fmt.text(year+"년 "+month+"월 "+day+"일 "+hour+":"+minute+":"+second);
+								$(el).after(fmt);
+							});
+							
+							$("#result tr").each(function(index,el){
+								if(index==0){
+									var exTime = $("<td>남은 시간</td>");
+									$(el).append(exTime);
+								}else if(el.firstElementChild.attributes.t.value!="z"){
+									var exTime = $("<td class='deadline'></td>");
+									$(el).append(exTime);
+								}
+							});
+							
+							if(nTimer!=null){
+								clearInteval(nTimer);
+								nTimer = null;
+							}
+							
+							nTimer = setInterval(fnTimer,1000);
+							
+										};
+										countReader.readAsBinaryString(this.files[0]);
+						
+								};
+        </script>
+    </head>
+    <body>
+        <input type="file" id = "repairList"></input>
+		<div id="result">
+		
+		</div>
+    </body>
+</html>
