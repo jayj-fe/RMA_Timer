@@ -14,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<PageRmaTimer />}></Route>
           <Route path="/Rma_Timer" element={<PageRmaTimer />}></Route>
+          <Route path="/RMA_Timer" element={<PageRmaTimer />}></Route>
         </Routes>
       </QueryClientProvider>
     </>
