@@ -1,3 +1,5 @@
+import RmaTimeOutItem from './RmaTimeOutItem';
+
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
 
 const dataChange = (dateString : string) => {
@@ -32,8 +34,7 @@ const RmaTimerView = ({ rmaData } : any) => {
       RMA : el.RMA,
       증상 : el.증상,
       KEYIN : el.KEYIN,
-      deadline : dataChange(el.KEYIN),
-      timeout : null
+      deadline : dataChange(el.KEYIN)
     }
   })
   return (
@@ -52,11 +53,11 @@ const RmaTimerView = ({ rmaData } : any) => {
         rmaDataList.map((el:any) => {
           return (
             <tr key={el.RMA}>
-              <td>{el.RMA}</td>
-              <td>{el.증상}</td>
-              <td>{el.KEYIN}</td>
-              <td>{el.deadline}</td>
-              <td>{el.timeout}</td>
+              <td><p>{el.RMA}</p></td>
+              <td><p>{el.증상}</p></td>
+              <td><p>{el.KEYIN}</p></td>
+              <td><p>{el.deadline}</p></td>
+              <td><RmaTimeOutItem deadline={el.deadline}/></td>
             </tr>
           )
         })

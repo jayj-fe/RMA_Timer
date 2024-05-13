@@ -4,7 +4,30 @@
 
   th,
   td{
-    padding: 5px;
     border:black solid 1px;
+  }
+  
+  th{
+    font-weight: bold;
+    color:#fff;
+    background:royalblue
+  }
+
+  td{
+    p,
+    strong{
+      display: inline-block;
+      margin: 0;
+      padding: 3px 5px;
+    }
+
+    .deadline-expires{
+      color:red
+    }
+
+    .deadline-soon{
+      display:block;
+      background:yellow;
+    }
   }
 }
