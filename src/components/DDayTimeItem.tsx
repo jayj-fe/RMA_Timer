@@ -41,8 +41,11 @@ const DDayTimeItem = ({ deadline } : any) => {
       }
     }
   }
+
   useEffect(() => {
-    timerRef.current = setInterval(stateHandler, 1000);
+    if(deadline !== undefined){
+      timerRef.current = setInterval(stateHandler, 1000);
+    }
     // stateHandler();
 
     return () => {

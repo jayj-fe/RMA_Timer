@@ -43,4 +43,114 @@
       background:red;
     }
   }
+
+  &.no{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.no{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng1{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng1{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng2{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng2{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng3{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng3{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng4{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng4{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng5{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng5{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng6{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng6{
+        display:table-row;
+      }
+    }
+  }
+  &.Himart_eng9{
+    tbody{
+      tr{
+        display: none;
+      }
+      tr.Himart_eng9{
+        display:table-row;
+      }
+    }
+  }
+}
+
+.rma-filter{
+  padding:0;
+  margin:0;
+
+  dt,dd{
+    padding:0;
+    margin:0;
+    list-style: none;
+  }
+
+  dt{
+    margin-bottom:10px;
+    font-weight: bold;
+  }
+
+  dd{
+    margin-bottom:20px;
+
+    &>div{
+      display:inline-block;
+      margin-right:10px;
+    }
+
+    label{
+      display:inline-block;
+    }
+  }
 }

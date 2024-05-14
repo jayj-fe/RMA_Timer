@@ -9,5 +9,10 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir
-  }
+  },
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./src"),
+    },
+  },
 })

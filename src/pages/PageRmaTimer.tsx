@@ -1,3 +1,4 @@
+import RmaSearchBar from '../components/RmaSearchBar'
 import RmaTimerView from '../components/RmaTimerView'
 import { useRmaTimer } from '../service/queries';
 import '../styles/rmaTimerView.scss';
@@ -12,9 +13,12 @@ const PageRmaTimer = () => {
   }
 
   return (
-   <RmaTimerView 
-    rmaData={rmaDataQuery.data}
-    />
+    <>
+      <RmaSearchBar />
+      <RmaTimerView 
+        rmaData={rmaDataQuery.data}
+        />
+    </>
   )
 }
 export default PageRmaTimer
