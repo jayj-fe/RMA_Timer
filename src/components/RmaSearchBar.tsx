@@ -6,7 +6,6 @@ import useTranOwner from '../stores/tranOwnerList'
 const RmaSearchBar = () => {
   const { useTranOwnerList } = useTranOwner();
   const { userFilterList, setUserFilterList } = useFilterStore();
-  // const { userName, userChooseList } = useUserHistoryStore();
 
   const inputHandleChange = (e) => {
     const filterData = userFilterList;
@@ -35,10 +34,18 @@ const RmaSearchBar = () => {
             <dd>
               {
                 useTranOwnerList.map((el, idx)=>{
+                  const itemName = el === '' ? 'no' : el;
+                  const itemChecked = userFilterList.indexOf(itemName) > -1;
                   return (
                     <div className="checkbox" key={idx}>
-                      <input type="checkbox" id={el === '' ? 'no' : el} name="tranowner-list"  onChange={inputHandleChange} />
-                      <label for={el === '' ? 'no' : el}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
+                      <input
+                        type="checkbox"
+                        id={itemName}
+                        name="TRAN_OWNER"
+                        onChange={inputHandleChange}
+                        checked={itemChecked ? 'checked' : false}
+                        />
+                      <label for={itemName}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
                     </div>
                   )
                 })

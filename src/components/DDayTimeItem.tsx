@@ -6,6 +6,16 @@ const DDayTimeItem = ({ deadline } : any) => {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [timeRemainingText, setTimeRemainingText] = useState(null);
 
+  useEffect(() => {
+    if(deadline !== undefined){
+      timerRef.current = setInterval(stateHandler, 1000);
+    }
+
+    return () => {
+      clearInterval(timerRef.current);
+    };
+  }, []);
+  
   const stateHandler = () => {
     const timeGap = timeCalculate();
     
@@ -42,17 +52,6 @@ const DDayTimeItem = ({ deadline } : any) => {
     }
   }
 
-  useEffect(() => {
-    if(deadline !== undefined){
-      timerRef.current = setInterval(stateHandler, 1000);
-    }
-    // stateHandler();
-
-    return () => {
-      clearInterval(timerRef.current);
-    };
-  }, []);
-  
   const timeCalculate = () => {
     const year    = deadline.substring(0,4);
     const month   = deadline.substring(5,7);

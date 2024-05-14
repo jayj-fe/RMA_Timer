@@ -11,7 +11,6 @@ const RepairTatItem = ({ repair_tat } : any) => {
     warningCnt = 'warning-red';
   }
 
-
   return (
     <p className={`${warning ? warningCnt : ""}`}>
       {repair_tat}
