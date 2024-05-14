@@ -1,16 +1,15 @@
 // @ts-nocheck
 import { useRef, useState, useEffect }from 'react'
 
-const RmaTimeOutItem = ({ deadline } : any) => {
+const DDayTimeItem = ({ deadline } : any) => {
   const timerRef = useRef();
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [timeRemainingText, setTimeRemainingText] = useState(null);
 
   const stateHandler = () => {
-    console.log(1)
     const timeGap = timeCalculate();
     
-    if( timeGap <= 0){
+    if(timeGap <= 0){
       clearInterval(timerRef.current);
       setTimeRemainingText(<strong className="deadline-expires">기간만료</strong>)
     }else{
@@ -31,12 +30,12 @@ const RmaTimeOutItem = ({ deadline } : any) => {
         dDaySec = "0"+dDaySec;
       }
   
-      const htmlText = dDay+"일 " + dDayHours + "시간 " + dDayMin + "분 " + dDaySec + "초";
+      const htmlText = dDay+"D-" + dDayHours + "H-" + dDayMin + "M-" + dDaySec + "S";
   
-      if(dDay==0 && dDayHours < 2){
-        setTimeRemainingText(<strong className="deadline-soon">마감임박</strong>)
-      }else if(dDay==0 && dDayHours < 3){
-        setTimeRemainingText(<strong className="deadline-soon">{htmlText}</strong>)
+      if(dDay==0 && dDayHours < 24){
+        setTimeRemainingText(<strong className="deadline-soon_day">{htmlText}</strong>)
+      }else if(dDay==0 && dDayHours < 12){
+        setTimeRemainingText(<strong className="deadline-soon_time">{htmlText}</strong>)
       }else{
         setTimeRemainingText(<p>{htmlText}</p>)
       }
@@ -44,6 +43,7 @@ const RmaTimeOutItem = ({ deadline } : any) => {
   }
   useEffect(() => {
     timerRef.current = setInterval(stateHandler, 1000);
+    // stateHandler();
 
     return () => {
       clearInterval(timerRef.current);
@@ -52,12 +52,12 @@ const RmaTimeOutItem = ({ deadline } : any) => {
   
   const timeCalculate = () => {
     const year    = deadline.substring(0,4);
-    const month   = deadline.substring(6,8);
-    const day     = deadline.substring(10,12);
-    const hour    = deadline.substring(14,16);
-    const minute  = deadline.substring(17,19);
-    const second  = deadline.substring(20,22);
-    
+    const month   = deadline.substring(5,7);
+    const day     = deadline.substring(8,10);
+    const hour    = deadline.substring(11,13);
+    const minute  = deadline.substring(14,16);
+    const second  = deadline.substring(17,19);
+
     const deadLineDate = new Date(Number(year), Number(month)-1, Number(day), Number(hour), Number(minute), Number(second));
     const today = new Date();
   
@@ -71,4 +71,4 @@ const RmaTimeOutItem = ({ deadline } : any) => {
     </>
   )
 }
-export default RmaTimeOutItem
+export default DDayTimeItem

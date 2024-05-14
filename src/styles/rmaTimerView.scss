@@ -25,9 +25,22 @@
       color:red
     }
 
-    .deadline-soon{
+    .deadline-soon_day{
       display:block;
       background:yellow;
+    }
+    .deadline-soon_time{
+      display:block;
+      background:red;
+    }
+
+    .warning-yellow{
+      display:block;
+      background:yellow;
+    }
+    .warning-red{
+      display:block;
+      background:red;
     }
   }
 }
