@@ -31,63 +31,86 @@ const deadlineCalculate = (dateString : string) => {
 }
 
 const RmaTimerView = ({ rmaData } : any) => {
+  const [ defaultData, setDefaultData ] = useState(undefined);
   const [ dataList, setDataList ] = useState(undefined);
   const { setUserTranOwnerList } = useTranOwner();
-  const { userFilterList } = useFilterStore();
-  const tranOwnerLists = [];
-
-  const rmaDataList = rmaData.map((el:any) => {
-    if(tranOwnerLists.indexOf(el.TRAN_OWNER) === -1){
-      tranOwnerLists.push(el.TRAN_OWNER);
-    }
-
-    return {
-      TRAN_OWNER : el.TRAN_OWNER,
-      RMA_NO_1 : el.RMA_NO_1,
-      SERIAL_NO : el.SERIAL_NO,
-      MODEL_ID : el.MODEL_ID,
-      CUSTOMER_PROBLEM : el.CUSTOMER_PROBLEM,
-      ITEM_MEMO : el.ITEM_MEMO,
-      FINAL_RMA_STATUS : el.FINAL_RMA_STATUS,
-      STATUS_1 : el.STATUS_1,
-      KBO_STATUS : el.KBO_STATUS,
-      // 2 ~ 2.5 [노란색], 2.5 ~ 3 [빨간색]
-      REPAIR_TAT : el.REPAIR_TAT,
-      // 1일 [노란색], 12시간 [빨간색]
-      deadline : deadlineCalculate(el.ALLOCATED_DATE)
-    }
-  })
-
-  const tableClassName = userFilterList.join(' ');
+  const { userFilterTranOwnerList } = useFilterStore();
 
   useEffect(()=>{
-    setDataList(rmaDataList)
-    setUserTranOwnerList(tranOwnerLists.sort());
+    init()
   }, [])
+
+  const init = () => {
+    const tranOwnerLists = [];
+    const rmaDefaultDataList = rmaData.map((el:any) => {
+      if(tranOwnerLists.indexOf(el.TRAN_OWNER) === -1){
+        tranOwnerLists.push(el.TRAN_OWNER);
+      }
+  
+      return {
+        TRAN_OWNER : el.TRAN_OWNER,
+        RMA_NO_1 : el.RMA_NO_1,
+        SERIAL_NO : el.SERIAL_NO,
+        MODEL_ID : el.MODEL_ID,
+        CUSTOMER_PROBLEM : el.CUSTOMER_PROBLEM,
+        ITEM_MEMO : el.ITEM_MEMO,
+        FINAL_RMA_STATUS : el.FINAL_RMA_STATUS,
+        STATUS_1 : el.STATUS_1,
+        KBO_STATUS : el.KBO_STATUS,
+        REPAIR_TAT : el.REPAIR_TAT,
+        deadline : deadlineCalculate(el.ALLOCATED_DATE)
+      }
+    })
+
+    setDefaultData(rmaDefaultDataList);
+    setUserTranOwnerList(tranOwnerLists.sort());
+    filterDataSet(rmaDefaultDataList);
+  }
+
+  const filterDataSet = (defaultData) => {
+    const showDataList = undefined;
+    const filterData = [];
+    let filterState = false;
+
+    if(userFilterTranOwnerList.length > 0){
+      const tranOwnerData = [];
+
+      userFilterTranOwnerList.forEach(el => {
+        const newData = defaultData.filter((ele) => ele.TRAN_OWNER === el)
+        tranOwnerData.push(newData);
+      });
+
+      console.log(tranOwnerData);
+      filterState = true;
+    }
+  }
   
   return (
-   <table className={`rma-timer-view ${tableClassName}`}>
-    <thead>
-      <tr>
-        <th scope="cols">TRAN_OWNER</th>
-        <th scope="cols">RMA_NO_1</th>
-        <th scope="cols">SERIAL_NO</th>
-        <th scope="cols">MODEL_ID</th>
-        <th scope="cols">CUSTOMER_PROBLEM</th>
-        <th scope="cols">ITEM_MEMO</th>
-        <th scope="cols">FINAL_RMA_STATUS</th>
-        <th scope="cols">STATUS_1</th>
-        <th scope="cols">KBO_STATUS</th>
-        <th scope="cols">REPAIR_TAT</th>
-        <th scope="cols">DEADLINE</th>
-      </tr>
-    </thead>
-    <tbody>
-      {dataList && (
-        <RmaItems rmaDataList={dataList} />
-      )}
-    </tbody>
-   </table>
+    <>
+    sfd : {userFilterTranOwnerList}
+    <table className={`rma-timer-view`}>
+      <thead>
+        <tr>
+          <th scope="cols">TRAN_OWNER</th>
+          <th scope="cols">RMA_NO_1</th>
+          <th scope="cols">SERIAL_NO</th>
+          <th scope="cols">MODEL_ID</th>
+          <th scope="cols">CUSTOMER_PROBLEM</th>
+          <th scope="cols">ITEM_MEMO</th>
+          <th scope="cols">FINAL_RMA_STATUS</th>
+          <th scope="cols">STATUS_1</th>
+          <th scope="cols">KBO_STATUS</th>
+          <th scope="cols">REPAIR_TAT</th>
+          <th scope="cols">DEADLINE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {dataList && (
+          <RmaItems rmaDataList={dataList} />
+        )}
+      </tbody>
+    </table>
+    </>
   )
 }
 export default RmaTimerView
