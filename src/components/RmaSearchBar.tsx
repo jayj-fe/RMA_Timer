@@ -4,25 +4,31 @@ import useFilterStore from '../stores/filterList'
 import useTranOwner from '../stores/tranOwnerList'
 
 const RmaSearchBar = () => {
-  const { useTranOwnerList } = useTranOwner();
-  const { userFilterTranOwnerList, setUserFilterTranOwnerList } = useFilterStore();
+  const { useTranOwnerList } = useTranOwner((state) => ({
+    useTranOwnerList: state.useTranOwnerList,
+  }));
+  const { userFilterTranOwnerList, setUserFilterTranOwnerList } = useFilterStore((state) => ({
+    userFilterTranOwnerList: state.userFilterTranOwnerList,
+    setUserFilterTranOwnerList: state.setUserFilterTranOwnerList,
+  }));
 
   const inputHandleChange = (e) => {
-    const filterData = userFilterTranOwnerList;
+    const filterData = [...userFilterTranOwnerList];
     const clickData = e.target;
     const filterIdx = filterData.indexOf(clickData.id);
 
     if(filterIdx !== -1 ){
       if(!clickData.checked){
         filterData.splice(filterIdx, 1);
+        setUserFilterTranOwnerList(filterData)
       }
     }else{
       if(clickData.checked){
         filterData.push(clickData.id)
+        setUserFilterTranOwnerList(filterData)
       }
     }
     
-    setUserFilterTranOwnerList(filterData)
   };
 
   return (
@@ -45,7 +51,7 @@ const RmaSearchBar = () => {
                         onChange={inputHandleChange}
                         checked={itemChecked ? 'checked' : false}
                         />
-                      <label for={itemName}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
+                      <label htmlFor={itemName}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
                     </div>
                   )
                 })
@@ -58,7 +64,7 @@ const RmaSearchBar = () => {
         <dd>
           <div className="checkbox">
             <input type="checkbox" id="completed-tasks" name="completed-tasks" />
-            <label for="completed-tasks">Completed Tasks</label>
+            <label htmlFor="completed-tasks">Completed Tasks</label>
           </div>
         </dd>
       </dl>

@@ -3,9 +3,9 @@ import { persist } from 'zustand/middleware';
 
 const useFilterStore = create(
   persist(
-    (set, get) => ({
+    set => ({
       userFilterTranOwnerList: [],
-      setUserFilterTranOwnerList: (arrs) => set(()=>({ userFilterTranOwnerList : arrs })),
+      setUserFilterTranOwnerList: (arrs) => set({ userFilterTranOwnerList : arrs }),
     }),
     {
       name: 'userFilter',

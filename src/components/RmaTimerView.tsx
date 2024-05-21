@@ -1,8 +1,8 @@
 //@ts-nocheck
-import RmaItems from './RmaItems';
+import { useState, useEffect } from 'react';
 import useFilterStore from '../stores/filterList'
 import useTranOwner from '../stores/tranOwnerList'
-import { useState, useEffect } from 'react';
+import RmaItems from './RmaItems';
 
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
 
@@ -33,12 +33,25 @@ const deadlineCalculate = (dateString : string) => {
 const RmaTimerView = ({ rmaData } : any) => {
   const [ defaultData, setDefaultData ] = useState(undefined);
   const [ dataList, setDataList ] = useState(undefined);
-  const { setUserTranOwnerList } = useTranOwner();
-  const { userFilterTranOwnerList } = useFilterStore();
+  const { setUserTranOwnerList } = useTranOwner((state) => ({
+    setUserTranOwnerList: state.setUserTranOwnerList,
+  }));
+  const { userFilterTranOwnerList, setUserFilterTranOwnerList } = useFilterStore((state) => ({
+    userFilterTranOwnerList: state.userFilterTranOwnerList,
+    setUserFilterTranOwnerList: state.setUserFilterTranOwnerList,
+  }));
+  const [ filterActive, setFilterActive ] = useState(0);
 
   useEffect(()=>{
     init()
   }, [])
+  
+  useEffect( () => {
+    if(defaultData){
+      filterDataSet(defaultData);
+    }
+  }, [userFilterTranOwnerList])
+
 
   const init = () => {
     const tranOwnerLists = [];
@@ -61,33 +74,36 @@ const RmaTimerView = ({ rmaData } : any) => {
         deadline : deadlineCalculate(el.ALLOCATED_DATE)
       }
     })
-
     setDefaultData(rmaDefaultDataList);
     setUserTranOwnerList(tranOwnerLists.sort());
     filterDataSet(rmaDefaultDataList);
   }
 
   const filterDataSet = (defaultData) => {
-    const showDataList = undefined;
-    const filterData = [];
+    const currentData = filterActive > 0 ? dataList : defaultData;
+    let currntFilterAcitve = filterActive;
+    let showDataList = undefined;
+    let filterData = [];
     let filterState = false;
 
     if(userFilterTranOwnerList.length > 0){
-      const tranOwnerData = [];
-
       userFilterTranOwnerList.forEach(el => {
-        const newData = defaultData.filter((ele) => ele.TRAN_OWNER === el)
-        tranOwnerData.push(newData);
+        const newData = currentData.filter((ele) => ele.TRAN_OWNER === el)
+        filterData = filterData.concat(newData);
       });
-
-      console.log(tranOwnerData);
       filterState = true;
     }
+    
+    if(filterState){
+      showDataList = filterData;
+    }else{
+      showDataList = defaultData;
+    }
+
+    setDataList(showDataList)
   }
   
   return (
-    <>
-    sfd : {userFilterTranOwnerList}
     <table className={`rma-timer-view`}>
       <thead>
         <tr>
@@ -110,7 +126,6 @@ const RmaTimerView = ({ rmaData } : any) => {
         )}
       </tbody>
     </table>
-    </>
   )
 }
 export default RmaTimerView
