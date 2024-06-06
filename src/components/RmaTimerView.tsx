@@ -1,7 +1,7 @@
 //@ts-nocheck
 import { useState, useEffect } from 'react';
 import useFilterStore from '../stores/filterList'
-import useTranOwner from '../stores/tranOwnerList'
+import useFilterMenuList from '../stores/filterMenuList'
 import RmaItems from './RmaItems';
 
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
@@ -33,14 +33,14 @@ const deadlineCalculate = (dateString : string) => {
 const RmaTimerView = ({ rmaData } : any) => {
   const [ defaultData, setDefaultData ] = useState(undefined);
   const [ dataList, setDataList ] = useState(undefined);
-  const { setUserTranOwnerList } = useTranOwner((state) => ({
+  const { setUserTranOwnerList, setUseFinalRmaStatusLists } = useFilterMenuList((state) => ({
     setUserTranOwnerList: state.setUserTranOwnerList,
+    setUseFinalRmaStatusLists: state.setUseFinalRmaStatusLists,
   }));
-  const { userFilterTranOwnerList, setUserFilterTranOwnerList } = useFilterStore((state) => ({
-    userFilterTranOwnerList: state.userFilterTranOwnerList,
-    setUserFilterTranOwnerList: state.setUserFilterTranOwnerList,
+  const { userFilterList, setUserFilterList } = useFilterStore((state) => ({
+    userFilterList: state.userFilterList,
+    setUserFilterList: state.setUserFilterList,
   }));
-  const [ filterActive, setFilterActive ] = useState(0);
 
   useEffect(()=>{
     init()
@@ -50,16 +50,19 @@ const RmaTimerView = ({ rmaData } : any) => {
     if(defaultData){
       filterDataSet(defaultData);
     }
-  }, [userFilterTranOwnerList])
-
+  }, [userFilterList])
 
   const init = () => {
     const tranOwnerLists = [];
+    const finalRmaStatusLists  = [];
     const rmaDefaultDataList = rmaData.map((el:any) => {
       if(tranOwnerLists.indexOf(el.TRAN_OWNER) === -1){
         tranOwnerLists.push(el.TRAN_OWNER);
       }
-  
+      if(finalRmaStatusLists.indexOf(el.FINAL_RMA_STATUS) === -1){
+        finalRmaStatusLists.push(el.FINAL_RMA_STATUS);
+      }
+
       return {
         TRAN_OWNER : el.TRAN_OWNER,
         RMA_NO_1 : el.RMA_NO_1,
@@ -76,31 +79,86 @@ const RmaTimerView = ({ rmaData } : any) => {
     })
     setDefaultData(rmaDefaultDataList);
     setUserTranOwnerList(tranOwnerLists.sort());
+    setUseFinalRmaStatusLists(finalRmaStatusLists.sort());
     filterDataSet(rmaDefaultDataList);
   }
 
   const filterDataSet = (defaultData) => {
-    const currentData = filterActive > 0 ? dataList : defaultData;
-    let currntFilterAcitve = filterActive;
-    let showDataList = undefined;
-    let filterData = [];
-    let filterState = false;
+    let datas = []
+    const newDatas = []
+    const filterTypeCnt = [];
 
-    if(userFilterTranOwnerList.length > 0){
-      userFilterTranOwnerList.forEach(el => {
-        const newData = currentData.filter((ele) => ele.TRAN_OWNER === el)
-        filterData = filterData.concat(newData);
+    if(userFilterList.length > 0){
+      userFilterList.map((el,idx) => {
+        if(idx === 0){
+          filterTypeCnt.push(el.name)
+          defaultData.forEach((ele) => {
+            if(el.name === 'TRAN_OWNER' && el.id === 'noTranOwner'){
+              if(ele[el.name] === ''){
+                datas.push(ele)
+              }
+            }
+            
+            if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
+              if(ele[el.name] === ''){
+                datas.push(ele)
+              }
+            }
+  
+            if(ele[el.name] === el.id){
+              datas.push(ele)
+            }
+          })
+        }
+        
+        if(filterTypeCnt.indexOf(el.name) > -1 && filterTypeCnt.length === 1){
+          defaultData.forEach((ele) => {
+            if(el.name === 'TRAN_OWNER' && el.id === 'noTranOwner'){
+              if(ele[el.name] === ''){
+                datas.push(ele)
+              }
+            }
+            
+            if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
+              if(ele[el.name] === ''){
+                datas.push(ele)
+              }
+            }
+  
+            if(ele[el.name] === el.id){
+              datas.push(ele)
+            }
+          })
+        }else{
+          if(filterTypeCnt.indexOf(el.name) > -1){
+            filterTypeCnt.push(el.name)
+          }
+          datas.forEach((ele) => {
+            if(el.name === 'TRAN_OWNER' && el.id === 'noTranOwner'){
+              if(ele[el.name] === ''){
+                newDatas.push(ele)
+              }
+            }
+            
+            if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
+              if(ele[el.name] === ''){
+                newDatas.push(ele)
+              }
+            }
+  
+            if(ele[el.name] === el.id){
+              newDatas.push(ele)
+            }
+          })
+
+          datas = newDatas;
+        }
       });
-      filterState = true;
-    }
-    
-    if(filterState){
-      showDataList = filterData;
-    }else{
-      showDataList = defaultData;
-    }
 
-    setDataList(showDataList)
+      setDataList(datas)
+    }else{
+      setDataList(defaultData)
+    }
   }
   
   return (

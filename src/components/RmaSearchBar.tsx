@@ -1,35 +1,54 @@
 // @ts-nocheck
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useFilterStore from '../stores/filterList'
-import useTranOwner from '../stores/tranOwnerList'
+import useFilterMenuList from '../stores/filterMenuList'
 
 const RmaSearchBar = () => {
-  const { useTranOwnerList } = useTranOwner((state) => ({
+  const [ tranOwnerCheck, setTranOwnerCheck ] = useState([]);
+  const [ finalRmaStatusCheck, setFinalRmaStatusCheck ] = useState([]);
+  const { useTranOwnerList, useFinalRmaStatusLists } = useFilterMenuList((state) => ({
     useTranOwnerList: state.useTranOwnerList,
+    useFinalRmaStatusLists: state.useFinalRmaStatusLists,
   }));
-  const { userFilterTranOwnerList, setUserFilterTranOwnerList } = useFilterStore((state) => ({
-    userFilterTranOwnerList: state.userFilterTranOwnerList,
-    setUserFilterTranOwnerList: state.setUserFilterTranOwnerList,
+  const { userFilterList, setUserFilterList } = useFilterStore((state) => ({
+    userFilterList: state.userFilterList,
+    setUserFilterList: state.setUserFilterList,
   }));
 
   const inputHandleChange = (e) => {
-    const filterData = [...userFilterTranOwnerList];
+    const filterData = [...userFilterList];
     const clickData = e.target;
-    const filterIdx = filterData.indexOf(clickData.id);
+    const filterCheck = filterData.filter((ele) => ele.id === clickData.id);
 
-    if(filterIdx !== -1 ){
-      if(!clickData.checked){
-        filterData.splice(filterIdx, 1);
-        setUserFilterTranOwnerList(filterData)
-      }
+    if(filterCheck.length > 0){
+      const filterExistence = filterData.filter((ele) => ele.id !== clickData.id);
+      setUserFilterList(filterExistence)
     }else{
-      if(clickData.checked){
-        filterData.push(clickData.id)
-        setUserFilterTranOwnerList(filterData)
-      }
+      filterData.push({name : clickData.name, id : clickData.id})
+      setUserFilterList(filterData)
     }
-    
   };
+
+  
+  useEffect(()=>{
+    let tranOwnerData = [];
+    userFilterList.forEach(element => {
+      if(element.name === 'TRAN_OWNER'){
+        tranOwnerData.push(element.id)
+      }
+    });
+
+    let finalRmaStatusData = [];
+    userFilterList.forEach(element => {
+      if(element.name === 'FINAL_RMA_STATUS'){
+        finalRmaStatusData.push(element.id)
+      }
+    });
+    
+    setTranOwnerCheck(tranOwnerData);
+    setFinalRmaStatusCheck(finalRmaStatusData);
+  }, [userFilterList])
+  
 
   return (
     <article className='rma-filter'>
@@ -40,8 +59,8 @@ const RmaSearchBar = () => {
             <dd>
               {
                 useTranOwnerList.map((el, idx)=>{
-                  const itemName = el === '' ? 'no' : el;
-                  const itemChecked = userFilterTranOwnerList.indexOf(itemName) > -1;
+                  const itemName = el === '' ? 'noTranOwner' : el;
+                  const itemChecked = tranOwnerCheck.indexOf(itemName) > -1 ? 'checked' : false;
                   return (
                     <div className="checkbox" key={idx}>
                       <input
@@ -49,9 +68,35 @@ const RmaSearchBar = () => {
                         id={itemName}
                         name="TRAN_OWNER"
                         onChange={inputHandleChange}
-                        checked={itemChecked ? 'checked' : false}
+                        checked={itemChecked}
                         />
                       <label htmlFor={itemName}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
+                    </div>
+                  )
+                })
+              }
+            </dd>
+          </>
+        )}
+
+        {useFinalRmaStatusLists && (
+          <>
+            <dt>FINAL_RMA_STATUS Filter</dt>
+            <dd>
+              {
+                useFinalRmaStatusLists.map((el, idx)=>{
+                  const itemName = el === '' ? 'noFinalRmaStatus' : el;
+                  const itemChecked = finalRmaStatusCheck.indexOf(itemName) > -1 ? 'checked' : false;
+                  return (
+                    <div className="checkbox" key={idx}>
+                      <input
+                        type="checkbox"
+                        id={itemName}
+                        name="FINAL_RMA_STATUS"
+                        onChange={inputHandleChange}
+                        checked={itemChecked}
+                        />
+                      <label htmlFor={itemName}>{ el === '' ? 'No FINAL_RMA_STATUS' : el }</label>
                     </div>
                   )
                 })
