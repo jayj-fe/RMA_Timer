@@ -1,30 +1,69 @@
 // @ts-nocheck
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useFilterStore from '../stores/filterList'
-import useTranOwner from '../stores/tranOwnerList'
+import useFilterMenuList from '../stores/filterMenuList'
 
 const RmaSearchBar = () => {
-  const { useTranOwnerList } = useTranOwner();
-  const { userFilterList, setUserFilterList } = useFilterStore();
+  const [ tranOwnerCheck, setTranOwnerCheck ] = useState([]);
+  const [ finalRmaStatusCheck, setFinalRmaStatusCheck ] = useState([]);
+  const [ completedCheck, setCompletedCheck ] = useState(false);
+  const { useTranOwnerList, useFinalRmaStatusLists } = useFilterMenuList((state) => ({
+    useTranOwnerList: state.useTranOwnerList,
+    useFinalRmaStatusLists: state.useFinalRmaStatusLists,
+  }));
+  const { userFilterList, setUserFilterList } = useFilterStore((state) => ({
+    userFilterList: state.userFilterList,
+    setUserFilterList: state.setUserFilterList,
+  }));
 
   const inputHandleChange = (e) => {
-    const filterData = userFilterList;
+    const filterData = [...userFilterList];
     const clickData = e.target;
-    const filterIdx = filterData.indexOf(clickData.id);
+    const filterCheck = filterData.filter((ele) => ele.id === clickData.id);
 
-    if(filterIdx !== -1 ){
-      if(!clickData.checked){
-        filterData.splice(filterIdx, 1);
+    if(filterCheck.length > 0){
+      const filterExistence = filterData.filter((ele) => ele.id !== clickData.id);
+
+      if(filterCheck.length > 1 && filterExistence[0] === 'completed-tasks'){
+        let item = filterExistence[0]
+        filterExistence[0] = filterExistence[1];
+        filterExistence[1] = item;
       }
+      setUserFilterList(filterExistence)
+
     }else{
-      if(clickData.checked){
-        filterData.push(clickData.id)
-      }
+      filterData.push({name : clickData.name, id : clickData.id})
+      setUserFilterList(filterData)
     }
-
-    setUserFilterList(filterData)
   };
 
+  useEffect(()=>{
+    let tranOwnerData = [];
+    userFilterList.forEach(element => {
+      if(element.name === 'TRAN_OWNER'){
+        tranOwnerData.push(element.id)
+      }
+    });
+
+    let finalRmaStatusData = [];
+    userFilterList.forEach(element => {
+      if(element.name === 'FINAL_RMA_STATUS'){
+        finalRmaStatusData.push(element.id)
+      }
+    });
+
+    let completedData = false;
+    userFilterList.forEach(element => {
+      if(element.name === 'completed-tasks'){
+        completedData = true;
+      }
+    });
+    
+    setTranOwnerCheck(tranOwnerData);
+    setFinalRmaStatusCheck(finalRmaStatusData);
+    setCompletedCheck(completedData)
+  }, [userFilterList])
+  
   return (
     <article className='rma-filter'>
       <dl>
@@ -34,8 +73,8 @@ const RmaSearchBar = () => {
             <dd>
               {
                 useTranOwnerList.map((el, idx)=>{
-                  const itemName = el === '' ? 'no' : el;
-                  const itemChecked = userFilterList.indexOf(itemName) > -1;
+                  const itemName = el === '' ? 'noTranOwner' : el;
+                  const itemChecked = tranOwnerCheck.indexOf(itemName) > -1 ? 'checked' : false;
                   return (
                     <div className="checkbox" key={idx}>
                       <input
@@ -43,9 +82,35 @@ const RmaSearchBar = () => {
                         id={itemName}
                         name="TRAN_OWNER"
                         onChange={inputHandleChange}
-                        checked={itemChecked ? 'checked' : false}
+                        checked={itemChecked}
                         />
-                      <label for={itemName}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
+                      <label htmlFor={itemName}>{ el === '' ? 'No TRAN_OWNER' : el }</label>
+                    </div>
+                  )
+                })
+              }
+            </dd>
+          </>
+        )}
+
+        {useFinalRmaStatusLists && (
+          <>
+            <dt>FINAL_RMA_STATUS Filter</dt>
+            <dd>
+              {
+                useFinalRmaStatusLists.map((el, idx)=>{
+                  const itemName = el === '' ? 'noFinalRmaStatus' : el;
+                  const itemChecked = finalRmaStatusCheck.indexOf(itemName) > -1 ? 'checked' : false;
+                  return (
+                    <div className="checkbox" key={idx}>
+                      <input
+                        type="checkbox"
+                        id={itemName}
+                        name="FINAL_RMA_STATUS"
+                        onChange={inputHandleChange}
+                        checked={itemChecked}
+                        />
+                      <label htmlFor={itemName}>{ el === '' ? 'No FINAL_RMA_STATUS' : el }</label>
                     </div>
                   )
                 })
@@ -54,11 +119,17 @@ const RmaSearchBar = () => {
           </>
         )}
         
-        <dt>Show Completed Tasks</dt>
+        <dt>Hidden Completed Tasks(*단일로 체크하거나 필터 마지막에 체크하십시오)</dt>
         <dd>
           <div className="checkbox">
-            <input type="checkbox" id="completed-tasks" name="completed-tasks" />
-            <label for="completed-tasks">Completed Tasks</label>
+            <input
+              type="checkbox"
+              id="completed-tasks"
+              name="completed-tasks"
+              onChange={inputHandleChange}
+              checked={completedCheck}
+              />
+            <label htmlFor="completed-tasks">Completed Tasks</label>
           </div>
         </dd>
       </dl>
