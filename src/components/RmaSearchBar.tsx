@@ -6,6 +6,7 @@ import useFilterMenuList from '../stores/filterMenuList'
 const RmaSearchBar = () => {
   const [ tranOwnerCheck, setTranOwnerCheck ] = useState([]);
   const [ finalRmaStatusCheck, setFinalRmaStatusCheck ] = useState([]);
+  const [ completedCheck, setCompletedCheck ] = useState(false);
   const { useTranOwnerList, useFinalRmaStatusLists } = useFilterMenuList((state) => ({
     useTranOwnerList: state.useTranOwnerList,
     useFinalRmaStatusLists: state.useFinalRmaStatusLists,
@@ -29,7 +30,6 @@ const RmaSearchBar = () => {
     }
   };
 
-  
   useEffect(()=>{
     let tranOwnerData = [];
     userFilterList.forEach(element => {
@@ -44,12 +44,19 @@ const RmaSearchBar = () => {
         finalRmaStatusData.push(element.id)
       }
     });
+
+    let completedData = false;
+    userFilterList.forEach(element => {
+      if(element.name === 'completed-tasks'){
+        completedData = true;
+      }
+    });
     
     setTranOwnerCheck(tranOwnerData);
     setFinalRmaStatusCheck(finalRmaStatusData);
+    setCompletedCheck(completedData)
   }, [userFilterList])
   
-
   return (
     <article className='rma-filter'>
       <dl>
@@ -105,10 +112,16 @@ const RmaSearchBar = () => {
           </>
         )}
         
-        <dt>Show Completed Tasks</dt>
+        <dt>Hidden Completed Tasks</dt>
         <dd>
           <div className="checkbox">
-            <input type="checkbox" id="completed-tasks" name="completed-tasks" />
+            <input
+              type="checkbox"
+              id="completed-tasks"
+              name="completed-tasks"
+              onChange={inputHandleChange}
+              checked={completedCheck}
+              />
             <label htmlFor="completed-tasks">Completed Tasks</label>
           </div>
         </dd>
