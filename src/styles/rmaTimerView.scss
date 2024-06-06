@@ -124,6 +124,12 @@
       }
     }
   }
+
+  &.completed-tasks{
+    tr.checked{
+      display:none;
+    }
+  }
 }
 
 .rma-filter{

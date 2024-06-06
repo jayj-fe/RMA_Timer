@@ -89,9 +89,20 @@ const RmaTimerView = ({ rmaData } : any) => {
     const newDatas = []
     const filterTypeCnt = [];
 
+    tableRef.current.classList.remove('completed-tasks');
+
     if(userFilterList.length > 0){
-      console.log(userFilterList)
       userFilterList.map((el,idx) => {
+        if(el.name === 'completed-tasks'){
+          tableRef.current.classList.add('completed-tasks');
+          
+          if(userFilterList.length === 1){
+            datas = [...defaultData];
+          }
+          
+          return false;
+        }
+
         if(idx === 0){
           filterTypeCnt.push(el.name)
           defaultData.forEach((ele) => {
@@ -150,16 +161,20 @@ const RmaTimerView = ({ rmaData } : any) => {
               if(ele[el.name] === ''){
                 newDatas.push(ele)
               }
+
+              return false;
             }
             
             if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
               if(ele[el.name] === ''){
                 newDatas.push(ele)
               }
+              return false;
             }
   
             if(ele[el.name] === el.id){
               newDatas.push(ele)
+              return false;
             }
           })
 

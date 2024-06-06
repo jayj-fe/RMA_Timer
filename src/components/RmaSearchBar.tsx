@@ -23,7 +23,14 @@ const RmaSearchBar = () => {
 
     if(filterCheck.length > 0){
       const filterExistence = filterData.filter((ele) => ele.id !== clickData.id);
+
+      if(filterCheck.length > 1 && filterExistence[0] === 'completed-tasks'){
+        let item = filterExistence[0]
+        filterExistence[0] = filterExistence[1];
+        filterExistence[1] = item;
+      }
       setUserFilterList(filterExistence)
+
     }else{
       filterData.push({name : clickData.name, id : clickData.id})
       setUserFilterList(filterData)
@@ -112,7 +119,7 @@ const RmaSearchBar = () => {
           </>
         )}
         
-        <dt>Hidden Completed Tasks</dt>
+        <dt>Hidden Completed Tasks(*단일로 체크하거나 필터 마지막에 체크하십시오)</dt>
         <dd>
           <div className="checkbox">
             <input

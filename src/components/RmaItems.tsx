@@ -57,7 +57,7 @@ const RmaItems = ({rmaDataList}) => {
       {
         rmaDataList.map((el:any, idx:Number) => {
           return (
-            <tr key={idx} className={`${ el.TRAN_OWNER === '' ? 'no' : el.TRAN_OWNER }`}>
+            <tr key={idx} className={`${completeList.indexOf(el.RMA_NO_1) > -1 ? 'checked' : ''}`}>
               <td><p>{el.TRAN_OWNER}</p></td>
               <td><p>{el.RMA_NO_1}</p></td>
               <td><p>{el.SERIAL_NO}</p></td>
