@@ -6,6 +6,7 @@ import RmaItems from './RmaItems';
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
 
 const deadlineCalculate = (dateString : string) => {
+  console.log(dateString)
   if(dateString === undefined || dateString === ''){
     return undefined
   }
@@ -64,6 +65,7 @@ const RmaTimerView = ({ rmaData } : any) => {
         finalRmaStatusLists.push(el.FINAL_RMA_STATUS);
       }
 
+      console.log('?')
       return {
         TRAN_OWNER : el.TRAN_OWNER,
         RMA_NO_1 : el.RMA_NO_1,
