@@ -2,6 +2,10 @@
   border-collapse:collapse;
   border:black solid 1px;
 
+  thead{
+    position: sticky;
+    top:0px;
+  }
   th,
   td{
     border:black solid 1px;
@@ -157,6 +161,27 @@
 
     label{
       display:inline-block;
+    }
+  }
+}
+
+.rma-header{
+  margin-bottom:10px;
+
+  .rma-header-menu{
+    display:flex;
+    justify-content: space-between;
+
+    a,
+    button{
+      background: none;
+      border:none;
+      color:#000;
+      font-size: 14px;
+      text-decoration: underline;
+      margin-right:6px;
+      padding:0;
+      cursor: pointer;
     }
   }
 }

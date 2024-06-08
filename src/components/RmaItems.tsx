@@ -2,62 +2,31 @@
 import { useState, useEffect } from 'react';
 import DDayTimeItem from './DDayTimeItem';
 import RepairTatItem from './RepairTatItem';
-import { db } from "../lib/js/firebase-config";
-import { doc, collection, getDocs, setDoc } from "firebase/firestore";
+import useCompleteDataList from '../stores/completeDataList'
 
 const RmaItems = ({rmaDataList}) => {
-  const [ completeList, setCompleteList ] = useState([]);
-
-  const firebaseUpdata = async ( newData ) => {
-    try {
-      const saveData = {
-        RMA_NO_1 : newData
-      }
-      await setDoc(doc(db, "rma-timer-db", "finish-work"), saveData);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-  
-  const firebaseInit = async () => {
-    try {
-      let completedData = []
-      const docRef = await getDocs(collection(db, "rma-timer-db"), "finish-work")
-
-      docRef.forEach((element) => {
-        completedData = element.data().RMA_NO_1
-      });
-
-      setCompleteList(completedData);
-      console.log(completeList)
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
+  const { useCompleteData, setUseCompleteData } = useCompleteDataList((state) => ({
+    useCompleteData: state.useCompleteData,
+    setUseCompleteData: state.setUseCompleteData,
+  }));
 
   const completeClick = (e) => {
-    if(completeList.indexOf(e.target.id) > -1){
-      const delData = completeList.filter((el)=> el !== e.target.id)
-      setCompleteList(delData);
-      firebaseUpdata(delData);
+    if(useCompleteData.indexOf(e.target.id) > -1){
+      const delData = useCompleteData.filter((el)=> el !== e.target.id)
+      setUseCompleteData(delData);
     }else{
-      const newData = [...completeList]
+      const newData = [...useCompleteData]
       newData.push(e.target.id);
-      setCompleteList(newData);
-      firebaseUpdata(newData);
+      setUseCompleteData(newData);
     }
   }
-
-  useEffect(()=>{
-    firebaseInit()
-  }, [])
 
   return (
     <>
       {
         rmaDataList.map((el:any, idx:Number) => {
           return (
-            <tr key={idx} className={`${completeList.indexOf(el.RMA_NO_1) > -1 ? 'checked' : ''}`}>
+            <tr key={idx} className={`${useCompleteData.indexOf(el.RMA_NO_1) > -1 ? 'checked' : ''}`}>
               <td><p>{el.TRAN_OWNER}</p></td>
               <td><p>{el.RMA_NO_1}</p></td>
               <td><p>{el.SERIAL_NO}</p></td>
@@ -75,7 +44,7 @@ const RmaItems = ({rmaDataList}) => {
                   id={el.RMA_NO_1}
                   name="completeData"
                   onChange={(e)=>completeClick(e)}
-                  checked={completeList.indexOf(el.RMA_NO_1) > -1 ? 'checked' : false}
+                  checked={useCompleteData.indexOf(el.RMA_NO_1) > -1 ? 'checked' : false}
                   />
                 <label htmlFor={el.RMA_NO_1}>Complete</label>
               </td>

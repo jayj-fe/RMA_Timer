@@ -5,13 +5,19 @@ import useFilterMenuList from '../stores/filterMenuList'
 import RmaItems from './RmaItems';
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
 
-const deadlineCalculate = (dateString : string) => {
-  console.log(dateString)
+const deadlineCalculate = (dateString : string, subDataString : string) => {
+  let calcuateData;
   if(dateString === undefined || dateString === ''){
-    return undefined
+    if(subDataString === undefined || subDataString === ''){
+      return undefined
+    }else{
+      calcuateData = subDataString
+    }
+  }else{
+    calcuateData = dateString;
   }
 
-  const newDate = new Date(dateString);
+  const newDate = new Date(calcuateData);
   
   let deadLineDate = new Date(newDate);
   deadLineDate.setDate(deadLineDate.getDate() + 1);
@@ -34,17 +40,17 @@ const RmaTimerView = ({ rmaData } : any) => {
   const tableRef = useRef();
   const [ defaultData, setDefaultData ] = useState(undefined);
   const [ dataList, setDataList ] = useState(undefined);
-  const { setUserTranOwnerList, setUseFinalRmaStatusLists } = useFilterMenuList((state) => ({
-    setUserTranOwnerList: state.setUserTranOwnerList,
-    setUseFinalRmaStatusLists: state.setUseFinalRmaStatusLists,
-  }));
   const { userFilterList, setUserFilterList } = useFilterStore((state) => ({
     userFilterList: state.userFilterList,
     setUserFilterList: state.setUserFilterList,
   }));
+  const { setUserTranOwnerList, setUseFinalRmaStatusLists } = useFilterMenuList((state) => ({
+    setUserTranOwnerList: state.setUserTranOwnerList,
+    setUseFinalRmaStatusLists: state.setUseFinalRmaStatusLists,
+  }));
 
   useEffect(()=>{
-    init()
+    init();
   }, [])
   
   useEffect( () => {
@@ -64,8 +70,6 @@ const RmaTimerView = ({ rmaData } : any) => {
       if(finalRmaStatusLists.indexOf(el.FINAL_RMA_STATUS) === -1){
         finalRmaStatusLists.push(el.FINAL_RMA_STATUS);
       }
-
-      console.log('?')
       return {
         TRAN_OWNER : el.TRAN_OWNER,
         RMA_NO_1 : el.RMA_NO_1,
@@ -77,7 +81,7 @@ const RmaTimerView = ({ rmaData } : any) => {
         STATUS_1 : el.STATUS_1,
         KBO_STATUS : el.KBO_STATUS,
         REPAIR_TAT : el.REPAIR_TAT,
-        deadline : deadlineCalculate(el.ALLOCATED_DATE)
+        deadline : deadlineCalculate(el.ALLOCATED_DATE, el.KEYIN_START_DATE)
       }
     })
     setDefaultData(rmaDefaultDataList);
