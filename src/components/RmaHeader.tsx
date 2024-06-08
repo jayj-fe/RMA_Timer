@@ -43,7 +43,7 @@ const RmaHeader = () => {
       <article className="rma-header-menu">
         <div>
           <a href="https://docs.google.com/spreadsheets/d/10tZZFY0tDLhDHt0Asf8WuDfPCtTutsJX2HoKLSH-Phc/edit#gid=0" target='_blank'>데이터 업데이트하러가기</a>
-          {/* <a href="#" target='_blank'>공휴일 입력하기</a> */}
+          <a href="https://docs.google.com/spreadsheets/d/14iFadhAEPMbkiMbw4QbtJxw4QCOxUVpe5OJbYvMvKdc/edit?gid=0" target='_blank'>공휴일 입력하기</a>
           <button type='button' onClick={ (e) => setFilterShow(!filterShow) }>필터보기</button>
         </div>
         <div>

@@ -5,7 +5,7 @@ import useFilterMenuList from '../stores/filterMenuList'
 import RmaItems from './RmaItems';
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
 
-const deadlineCalculate = (dateString : string, subDataString : string) => {
+const deadlineCalculate = (dateString : string, subDataString : string, dayOff : string) => {
   let calcuateData;
   if(dateString === undefined || dateString === ''){
     if(subDataString === undefined || subDataString === ''){
@@ -20,7 +20,14 @@ const deadlineCalculate = (dateString : string, subDataString : string) => {
   const newDate = new Date(calcuateData);
   
   let deadLineDate = new Date(newDate);
+  
   deadLineDate.setDate(deadLineDate.getDate() + 1);
+  let checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+
+  while(dayOff.indexOf(checkDayOff) > -1){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+  }
 
   if(deadLineDate.getDay() === 6){
     deadLineDate.setDate(deadLineDate.getDate() + 1);
@@ -30,13 +37,44 @@ const deadlineCalculate = (dateString : string, subDataString : string) => {
     deadLineDate.setDate(deadLineDate.getDate() + 1);
   }
 
+  while(dayOff.indexOf(checkDayOff) > -1){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+  }
+
+  if(deadLineDate.getDay() === 6){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+  }
+  
+  if(deadLineDate.getDay() === 0){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+  }
+
+  while(dayOff.indexOf(checkDayOff) > -1){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+  }
+
+  if(deadLineDate.getDay() === 6){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+  }
+  
+  if(deadLineDate.getDay() === 0){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+  }
+
+  while(dayOff.indexOf(checkDayOff) > -1){
+    deadLineDate.setDate(deadLineDate.getDate() + 1);
+    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+  }
+
   deadLineDate.setDate(deadLineDate.getDate() + 1);
   const KoDeadLineDate = new Date(deadLineDate.getTime() + TIME_ZONE).toISOString().replace('T', ' ').slice(0, -5);
 
   return KoDeadLineDate;
 }
 
-const RmaTimerView = ({ rmaData } : any) => {
+const RmaTimerView = ({ rmaData, rmaDayOff } : any) => {
   const tableRef = useRef();
   const [ defaultData, setDefaultData ] = useState(undefined);
   const [ dataList, setDataList ] = useState(undefined);
@@ -62,6 +100,12 @@ const RmaTimerView = ({ rmaData } : any) => {
   const init = () => {
     const tranOwnerLists = [];
     const finalRmaStatusLists  = [];
+    
+    const dayOff = []
+    rmaDayOff.map((el)=>{
+      dayOff.push(el.DAYOFF)
+    })
+
     const filterData = rmaData.filter((el:any) => el.RMA_NO_1 !== '' );
     const rmaDefaultDataList = filterData.map((el:any) => {
       if(tranOwnerLists.indexOf(el.TRAN_OWNER) === -1){
@@ -81,7 +125,7 @@ const RmaTimerView = ({ rmaData } : any) => {
         STATUS_1 : el.STATUS_1,
         KBO_STATUS : el.KBO_STATUS,
         REPAIR_TAT : el.REPAIR_TAT,
-        deadline : deadlineCalculate(el.ALLOCATED_DATE, el.KEYIN_START_DATE)
+        deadline : deadlineCalculate(el.ALLOCATED_DATE, el.KEYIN_START_DATE, dayOff)
       }
     })
     setDefaultData(rmaDefaultDataList);
