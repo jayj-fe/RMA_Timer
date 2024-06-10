@@ -5,7 +5,7 @@ import useFilterMenuList from '../stores/filterMenuList'
 import RmaItems from './RmaItems';
 const TIME_ZONE = 9 * 60 * 60 * 1000; 
 
-const deadlineCalculate = (dateString : string, subDataString : string, dayOff : string) => {
+const deadlineCalculate = (idValue, dateString : string, subDataString : string, dayOff : any) => {
   let calcuateData;
   if(dateString === undefined || dateString === ''){
     if(subDataString === undefined || subDataString === ''){
@@ -20,55 +20,70 @@ const deadlineCalculate = (dateString : string, subDataString : string, dayOff :
   const newDate = new Date(calcuateData);
   
   let deadLineDate = new Date(newDate);
+
+  function addDay(){
+    while(dayOff.indexOf(checkDayOff) > -1){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
   
+    if(deadLineDate.getDay() === 6){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+    
+    if(deadLineDate.getDay() === 0){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+  
+    while(dayOff.indexOf(checkDayOff) > -1){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+  
+    if(deadLineDate.getDay() === 6){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+    
+    if(deadLineDate.getDay() === 0){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+  
+    while(dayOff.indexOf(checkDayOff) > -1){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+  
+    if(deadLineDate.getDay() === 6){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+    
+    if(deadLineDate.getDay() === 0){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+  
+    while(dayOff.indexOf(checkDayOff) > -1){
+      deadLineDate.setDate(deadLineDate.getDate() + 1);
+      checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+    }
+  }  
+
   deadLineDate.setDate(deadLineDate.getDate() + 1);
   let checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
 
-  while(dayOff.indexOf(checkDayOff) > -1){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
-  }
-
-  if(deadLineDate.getDay() === 6){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-  }
-  
-  if(deadLineDate.getDay() === 0){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-  }
-
-  while(dayOff.indexOf(checkDayOff) > -1){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
-  }
-
-  if(deadLineDate.getDay() === 6){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-  }
-  
-  if(deadLineDate.getDay() === 0){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-  }
-
-  while(dayOff.indexOf(checkDayOff) > -1){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
-  }
-
-  if(deadLineDate.getDay() === 6){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-  }
-  
-  if(deadLineDate.getDay() === 0){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-  }
-
-  while(dayOff.indexOf(checkDayOff) > -1){
-    deadLineDate.setDate(deadLineDate.getDate() + 1);
-    checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
-  }
-
+  addDay();
   deadLineDate.setDate(deadLineDate.getDate() + 1);
+  checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+
+  addDay();
+  deadLineDate.setDate(deadLineDate.getDate() + 1);
+  checkDayOff = deadLineDate.getFullYear() + '-' + ( (deadLineDate.getMonth()+1) < 9 ? "0" + (deadLineDate.getMonth()+1) : (deadLineDate.getMonth()+1) )+ '-' + ( (deadLineDate.getDate()) < 9 ? "0" + (deadLineDate.getDate()) : (deadLineDate.getDate()) );
+
   const KoDeadLineDate = new Date(deadLineDate.getTime() + TIME_ZONE).toISOString().replace('T', ' ').slice(0, -5);
 
   return KoDeadLineDate;
@@ -124,8 +139,9 @@ const RmaTimerView = ({ rmaData, rmaDayOff } : any) => {
         FINAL_RMA_STATUS : el.FINAL_RMA_STATUS,
         STATUS_1 : el.STATUS_1,
         KBO_STATUS : el.KBO_STATUS,
+        START_DAY : el.ALLOCATED_DATE !== '' ? el.ALLOCATED_DATE : el.KEYIN_START_DATE,
         REPAIR_TAT : el.REPAIR_TAT,
-        deadline : deadlineCalculate(el.ALLOCATED_DATE, el.KEYIN_START_DATE, dayOff)
+        deadline : deadlineCalculate(el.RMA_NO_1, el.ALLOCATED_DATE, el.KEYIN_START_DATE, dayOff)
       }
     })
     setDefaultData(rmaDefaultDataList);
@@ -251,6 +267,7 @@ const RmaTimerView = ({ rmaData, rmaDayOff } : any) => {
           <th scope="cols">FINAL_RMA_STATUS</th>
           <th scope="cols">STATUS_1</th>
           <th scope="cols">KBO_STATUS</th>
+          <th scope="cols">STARTDAY</th>
           <th scope="cols">REPAIR_TAT</th>
           <th scope="cols">DEADLINE</th>
           <th scope="cols">COMPLETED</th>

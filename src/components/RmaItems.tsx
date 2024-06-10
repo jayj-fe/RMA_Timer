@@ -36,6 +36,7 @@ const RmaItems = ({rmaDataList}) => {
               <td><p>{el.FINAL_RMA_STATUS}</p></td>
               <td><p>{el.STATUS_1}</p></td>
               <td><p>{el.KBO_STATUS}</p></td>
+              <td><p>{el.START_DAY}</p></td>
               <td><RepairTatItem repair_tat={el.REPAIR_TAT}/></td>
               <td><DDayTimeItem deadline={el.deadline}/></td>
               <td>
