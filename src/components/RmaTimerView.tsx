@@ -155,99 +155,48 @@ const RmaTimerView = ({ rmaData, rmaDayOff } : any) => {
     const newDatas = []
     const filterTypeCnt = [];
 
-    tableRef.current.classList.remove('completed-tasks');
+    const filter1 = [];
+    const filter2 = [];
 
+    tableRef.current.classList.remove('completed-tasks');
+    
     if(userFilterList.length > 0){
       userFilterList.map((el,idx) => {
         if(el.name === 'completed-tasks'){
           tableRef.current.classList.add('completed-tasks');
           
-          if(userFilterList.length === 1){
-            datas = [...defaultData];
-          }
-          
           return false;
         }
 
-        if(idx === 0){
-          filterTypeCnt.push(el.name)
-          defaultData.forEach((ele) => {
-            if(el.name === 'completed-tasks'){
-              return false;
-            }
-
-            if(el.name === 'TRAN_OWNER' && el.id === 'noTranOwner'){
-              if(ele[el.name] === ''){
-                datas.push(ele)
-              }
-
-              return false;
-            }
-            
-            if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
-              if(ele[el.name] === ''){
-                datas.push(ele)
-              }
-
-              return false;
-            }
-  
-            if(ele[el.name] === el.id){
-              datas.push(ele)
-
-              return false;
-            }
-          })
+        if(el.name === 'TRAN_OWNER'){
+          const pushData = el.id === 'noTranOwner' ? '' : el.id;
+          filter1.push(pushData)
         }
-        
-        if(filterTypeCnt.indexOf(el.name) > -1 && filterTypeCnt.length === 1){
-          defaultData.forEach((ele) => {
-            if(el.name === 'TRAN_OWNER' && el.id === 'noTranOwner'){
-              if(ele[el.name] === ''){
-                datas.push(ele)
-              }
-            }
-            
-            if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
-              if(ele[el.name] === ''){
-                datas.push(ele)
-              }
-            }
-  
-            if(ele[el.name] === el.id){
-              datas.push(ele)
-            }
-          })
-        }else{
-          if(filterTypeCnt.indexOf(el.name) > -1){
-            filterTypeCnt.push(el.name)
-          }
-          datas.forEach((ele) => {
-            if(el.name === 'TRAN_OWNER' && el.id === 'noTranOwner'){
-              if(ele[el.name] === ''){
-                newDatas.push(ele)
-              }
 
-              return false;
-            }
-            
-            if(el.name === 'FINAL_RMA_STATUS' && el.id === 'noFinalRmaStatus'){
-              if(ele[el.name] === ''){
-                newDatas.push(ele)
-              }
-              return false;
-            }
-  
-            if(ele[el.name] === el.id){
-              newDatas.push(ele)
-              return false;
-            }
-          })
-
-          datas = newDatas;
+        if(el.name === 'FINAL_RMA_STATUS'){
+          const pushData = el.id === 'noFinalRmaStatus' ? '' : el.id;
+          filter2.push(pushData)
         }
       });
+        
+      if(filter1.length > 0){
+        const result = defaultData.filter((item) => filter1.indexOf(item.TRAN_OWNER) > -1);
+        datas = result;
 
+        if(filter2.length > 0){
+          const result2 = result.filter((item) => filter2.indexOf(item.FINAL_RMA_STATUS) > -1);
+          datas = result2;
+        }else{
+          datas = result;
+        }
+      }else{
+        if(filter2.length > 0){
+          const result = defaultData.filter((item) => filter2.indexOf(item.FINAL_RMA_STATUS) > -1);
+          datas = result;
+        }else{
+          datas = defaultData;
+        }
+      }
       setDataList(datas)
     }else{
       setDataList(defaultData)
